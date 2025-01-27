@@ -3,7 +3,12 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { BaseApi } from "../../utils/BaseApi";
 import { useLocation } from "react-router-dom";
-
+type TUser = {
+	userName: string;
+	email: string;
+	phone: string;
+};
+ 
 const CheckoutForm = () => {
 	const stripe = useStripe();
 	const elements = useElements();
@@ -11,10 +16,11 @@ const CheckoutForm = () => {
 	const [error, setError] = useState("");
 	const [clientSecret, setClientSecret] = useState("");
 	const [transactionId, setTransactionId] = useState("");
-	const [userData, setUserData] = useState(null);
+	const [userData, setUserData] = useState<TUser | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
 	const location = useLocation();
 	const { cart, totalAmount } = location.state || {};
+	console.log("🚀 ~ CheckoutForm ~ cart:", cart, isLoading);
 
 	useEffect(() => {
 		if (token) {
@@ -79,7 +85,7 @@ const CheckoutForm = () => {
 		}
 	}, [token, totalAmount]);
 
-	const handleSubmit = async event => {
+	const handleSubmit = async (event: any) => {
 		event.preventDefault();
 
 		if (!stripe || !elements) {
@@ -104,7 +110,7 @@ const CheckoutForm = () => {
 		});
 
 		if (error) {
-			setError(error.message);
+			setError(error.message || "An unknown error occurred.");
 			console.log("[error]", error);
 		} else {
 			setError("");
@@ -127,7 +133,9 @@ const CheckoutForm = () => {
 
 		if (confirmError) {
 			console.log(confirmError);
-			setError(confirmError.message);
+			setError(
+				confirmError.message || "An error occurred during payment confirmation."
+			);
 		} else {
 			if (paymentIntent.status === "succeeded") {
 				console.log(paymentIntent.id);
@@ -138,7 +146,8 @@ const CheckoutForm = () => {
 	return (
 		<form onSubmit={handleSubmit}>
 			<p className="pb-3">
-				Payment will deducted: <span className="text-secondary font-bold"> ${totalAmount}</span>
+				Payment will deducted:{" "}
+				<span className="text-secondary font-bold"> ${totalAmount}</span>
 			</p>
 			<CardElement
 				options={{

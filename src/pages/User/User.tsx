@@ -3,10 +3,14 @@ import Loader from "../../components/Loader/Loader";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BaseApi } from "../../utils/BaseApi";
-
+type TUser = {
+	userName: string;
+	email: string;
+	phone: string;
+};
 const User = () => {
 	const token = localStorage.getItem("AuthToken");
-	const [userData, setUserData] = useState(null);
+	const [userData, setUserData] =  useState<TUser | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
 	const navigate = useNavigate();
 

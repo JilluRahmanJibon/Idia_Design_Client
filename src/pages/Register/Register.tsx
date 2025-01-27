@@ -1,8 +1,15 @@
-import { useNavigate } from "react-router-dom"; // For navigation after registration
-import { useForm } from "react-hook-form"; // Import useForm
-import { toast } from "sonner"; // For notifications
+import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import axios from "axios";
 import { BaseApi } from "../../utils/BaseApi";
+type TFormData = {
+	userName: string;
+	email: string;
+	phone: string;
+	password: string;
+	confirmPassword: string;
+};
 
 const Register = () => {
 	const navigate = useNavigate();
@@ -13,9 +20,9 @@ const Register = () => {
 		handleSubmit,
 		formState: { errors },
 		setError,
-	} = useForm();
+	} = useForm<TFormData>();
 
-	const onSubmit = async (data: any) => {
+	const onSubmit = async (data: TFormData) => {
 		const { userName, email, phone, password, confirmPassword } = data;
 
 		// Validation checks
@@ -91,7 +98,7 @@ const Register = () => {
 								{...register("userName", { required: "Username is required" })}
 								placeholder="Enter your username"
 								className={`w-full p-3 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all ${
-									errors.username ? "border-red-500" : ""
+									errors.userName ? "border-red-500" : ""
 								}`}
 							/>
 							{errors.userName && (

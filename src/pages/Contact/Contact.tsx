@@ -3,11 +3,16 @@ import emailjs from "@emailjs/browser";
 import { FiMapPin, FiPhone, FiMail } from "react-icons/fi"; // Importing icons
 
 function Contact() {
-	const form = useRef();
+	const form = useRef<HTMLFormElement | null>(null);
 	const [done, setDone] = useState(false);
 
-	const sendEmail = e => {
+	const sendEmail = (e: React.FormEvent) => {
 		e.preventDefault();
+		if (!form.current) {
+			console.error("Form reference is not available.");
+			return;
+		}
+
 		emailjs
 			.sendForm(
 				"service_fw1aj2r",
@@ -19,7 +24,7 @@ function Contact() {
 				result => {
 					console.log(result.text);
 					setDone(true);
-					form.current.reset();
+					form.current?.reset();
 				},
 				error => {
 					console.log(error.text);
@@ -92,7 +97,7 @@ function Contact() {
 								</label>
 								<textarea
 									name="message"
-									rows="4"
+									rows={4}
 									placeholder="Write your message..."
 									required
 									className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-teal-500"></textarea>

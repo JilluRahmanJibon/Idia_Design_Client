@@ -9,6 +9,10 @@ import { toast } from "sonner";
 interface Image {
 	img: string;
 }
+type TUser = {
+	_id: string;
+	email: string;
+};
 
 // Define the type for the portfolio data
 interface PortfolioData {
@@ -23,20 +27,12 @@ interface PortfolioData {
 	images?: Image[]; // This is an array of Image objects
 }
 
-// Define the type for cart items
-interface CartItem {
-	_id: string;
-	title: string;
-	price: string;
-	picture: string;
-}
-
 const PortfolioDetails = () => {
 	const [data, setData] = useState<PortfolioData | null>(null);
-	const [cart, setCart] = useState<CartItem[]>([]);
+	 const [user, setUser] = useState<TUser | null>(null);
 	const params = useParams();
 	const navigate = useNavigate();
-	const token = localStorage.getItem("AuthToken"); // Get the token from localStorage
+	const token = localStorage.getItem("AuthToken");
 
 	useEffect(() => {
 		fetch(`${BaseApi}/portfolio/${params?.id}`)
@@ -46,11 +42,16 @@ const PortfolioDetails = () => {
 			});
 
 		// Load cart from localStorage
-		const savedCart = localStorage.getItem("cart");
-		if (savedCart) {
-			setCart(JSON.parse(savedCart));
-		}
-	}, [params?.id]);
+		fetch(`${BaseApi}/users/me`, {
+			headers: {
+				Authorization: `${token}`,
+			},
+		})
+			.then(res => res.json())
+			.then(data => {
+				setUser(data.data);
+			});
+	}, [params?.id, token]);
 
 	// Early return if data is not loaded
 	if (!data) {
@@ -68,18 +69,23 @@ const PortfolioDetails = () => {
 		video,
 		images,
 	} = data;
-
+ 
 	const addToCart = () => {
-		const existingItem = cart.find(item => item._id === _id);
-		if (existingItem) {
-			toast.error("Item is already in your cart!");
+		if (!user) {
+			toast.error("Please log in to add items to the cart.");
+			navigate("/login");
 			return;
 		}
 
-		const newCart: CartItem[] = [...cart, { _id, title, price, picture }];
-		setCart(newCart);
-		toast.success("Item added to cart successfully!");
-		localStorage.setItem("cart", JSON.stringify(newCart)); // Save to localStorage
+		const cartData = {
+			userId: user?._id,
+			userEmail: user?.email,
+			productId: _id,
+			productName: title,
+			price: price,
+			picture: picture,
+		};
+		console.log("🚀 ~ addToCart ~ cartData:", cartData);
 	};
 
 	const buyNow = () => {
@@ -105,7 +111,7 @@ const PortfolioDetails = () => {
 			</section>
 
 			{/* Image Gallery Section */}
-			{images && images.length > 0 && (
+			{images && images?.length > 0 && (
 				<section className="w-full mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 px-4">
 					{images.map((img, i) => (
 						<div
