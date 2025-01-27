@@ -73,19 +73,18 @@ const Navbar = () => {
 							{menuItems}
 						</ul>
 
-						{/* Cart Icon */}
-						<NavLink
-							to="/cart"
-							className="relative text-gray-600 hover:text-primary transition-colors">
-							<FaShoppingCart className="text-2xl" />
-							<span className="absolute -top-3 -right-3 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-red-600 rounded-full">
-								{cartCount()}
-							</span>
-						</NavLink>
-
 						{/* Login/Profile/Logout */}
 						{isLoggedIn ? (
 							<div className="flex items-center space-x-4">
+								{/* Cart Icon */}
+								<NavLink
+									to="/cart"
+									className="relative text-gray-600 hover:text-primary transition-colors">
+									<FaShoppingCart className="text-2xl" />
+									<span className="absolute -top-3 -right-3 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-red-600 rounded-full">
+										{cartCount()}
+									</span>
+								</NavLink>
 								<NavLink
 									to="/dashboard"
 									className="flex items-center space-x-2 text-gray-600 hover:text-primary transition-colors">
@@ -94,7 +93,7 @@ const Navbar = () => {
 								</NavLink>
 								<button
 									onClick={handleLogout}
-									className="text-gray-600 hover:text-primary transition-colors">
+									className="text-gray-100 bg-primary hover:bg-secondary px-2 py-1 rounded-md hover:text-white transition-colors">
 									Logout
 								</button>
 							</div>
