@@ -57,7 +57,7 @@ const PortfolioDetails = () => {
 		images,
 	} = data;
 
-	const addToCart =async () => {
+	const addToCart = async () => {
 		if (!user) {
 			toast.error("Please log in to add items to the cart.");
 			navigate("/login");
@@ -72,12 +72,18 @@ const PortfolioDetails = () => {
 			price: price,
 			picture: picture,
 		};
-		try { 
-			const res = await axios.post(`${BaseApi}/cart/add-to-cart`,{cartData})
-		} catch (err) {
-			console.log(err)
-		} 
+		try {
+			const res = await axios.post(`${BaseApi}/cart/add`, cartData, {
+				headers: {
+					Authorization: `${token}`,
+					"Content-Type": "application/json",
+				},
+			});
 
+			toast.success(res.data.message);
+		} catch (err: any) {
+			toast.error(err.response.data.message);
+		}
 	};
 
 	const buyNow = () => {

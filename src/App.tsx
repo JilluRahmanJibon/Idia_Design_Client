@@ -25,7 +25,6 @@ function App() {
 					setUser(response.data.data);
 				} catch (error) {
 					console.error("Failed to fetch user data:", error);
-					localStorage.removeItem("AuthToken");
 				} finally {
 					setLoading(false);
 				}
@@ -37,7 +36,7 @@ function App() {
 		}
 	}, [token, user, setUser]);
 
-	// Show a loading state until user data is fetched
+	
 	if (loading) {
 		return <Loader />;
 	}

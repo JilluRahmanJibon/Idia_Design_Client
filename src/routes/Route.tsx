@@ -27,7 +27,14 @@ const router = createBrowserRouter([
 			{ path: "/portfolio/:id", element: <PortfolioDetails /> },
 			{ path: "/contact", element: <Contact /> },
 			{ path: "/about", element: <About /> },
-			{ path: "/cart", element: <Cart /> },
+			{
+				path: "/cart",
+				element: (
+					<ProtectedRoute>
+						<Cart />
+					</ProtectedRoute>
+				),
+			},
 			{
 				path: "/payment",
 				element: (
