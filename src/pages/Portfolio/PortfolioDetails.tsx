@@ -4,15 +4,13 @@ import { BaseApi } from "../../utils/BaseApi";
 import ReactModalImage from "react-modal-image"; // Import the modal image library
 import Loader from "../../components/Loader/Loader";
 import { toast } from "sonner";
+import { useUser } from "../../context/UserContext";
+import axios from "axios";
 
 // Define the type for the image object
 interface Image {
 	img: string;
 }
-type TUser = {
-	_id: string;
-	email: string;
-};
 
 // Define the type for the portfolio data
 interface PortfolioData {
@@ -24,12 +22,12 @@ interface PortfolioData {
 	service: string;
 	picture: string;
 	video?: string;
-	images?: Image[]; // This is an array of Image objects
+	images?: Image[];
 }
 
 const PortfolioDetails = () => {
 	const [data, setData] = useState<PortfolioData | null>(null);
-	 const [user, setUser] = useState<TUser | null>(null);
+	const { user } = useUser();
 	const params = useParams();
 	const navigate = useNavigate();
 	const token = localStorage.getItem("AuthToken");
@@ -39,17 +37,6 @@ const PortfolioDetails = () => {
 			.then(res => res.json())
 			.then(data => {
 				setData(data.data);
-			});
-
-		// Load cart from localStorage
-		fetch(`${BaseApi}/users/me`, {
-			headers: {
-				Authorization: `${token}`,
-			},
-		})
-			.then(res => res.json())
-			.then(data => {
-				setUser(data.data);
 			});
 	}, [params?.id, token]);
 
@@ -69,8 +56,8 @@ const PortfolioDetails = () => {
 		video,
 		images,
 	} = data;
- 
-	const addToCart = () => {
+
+	const addToCart =async () => {
 		if (!user) {
 			toast.error("Please log in to add items to the cart.");
 			navigate("/login");
@@ -85,7 +72,12 @@ const PortfolioDetails = () => {
 			price: price,
 			picture: picture,
 		};
-		console.log("🚀 ~ addToCart ~ cartData:", cartData);
+		try { 
+			const res = await axios.post(`${BaseApi}/cart/add-to-cart`,{cartData})
+		} catch (err) {
+			console.log(err)
+		} 
+
 	};
 
 	const buyNow = () => {

@@ -3,56 +3,20 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { BaseApi } from "../../utils/BaseApi";
 import { useLocation } from "react-router-dom";
-type TUser = {
-	userName: string;
-	email: string;
-	phone: string;
-};
- 
+import { useUser } from "../../context/UserContext";
+
 const CheckoutForm = () => {
 	const stripe = useStripe();
 	const elements = useElements();
 	const token = localStorage.getItem("AuthToken");
+	const { user } = useUser();
 	const [error, setError] = useState("");
 	const [clientSecret, setClientSecret] = useState("");
 	const [transactionId, setTransactionId] = useState("");
-	const [userData, setUserData] = useState<TUser | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
 	const location = useLocation();
 	const { cart, totalAmount } = location.state || {};
 	console.log("🚀 ~ CheckoutForm ~ cart:", cart, isLoading);
-
-	useEffect(() => {
-		if (token) {
-			// Fetch user data with token
-			const fetchUserData = async () => {
-				try {
-					const response = await axios.get(`${BaseApi}/users/me`, {
-						headers: {
-							Authorization: `${token}`,
-							"Content-Type": "application/json",
-						},
-					});
-
-					// Set user data from the API response
-					setUserData(response.data.data);
-				} catch (error) {
-					// navigate("/login");
-					console.error(error);
-					localStorage.removeItem("AuthToken");
-					// Handle error by showing default values or an error message
-				} finally {
-					setIsLoading(false);
-				}
-			};
-
-			fetchUserData();
-		} else {
-			// navigate("/");
-			console.log("No AuthToken found in localStorage");
-			setIsLoading(false);
-		}
-	}, [token]);
 
 	useEffect(() => {
 		if (token && totalAmount) {
@@ -94,7 +58,7 @@ const CheckoutForm = () => {
 		if (!clientSecret) {
 			return;
 		}
-		if (!userData?.email) {
+		if (!user?.email) {
 			return;
 		}
 
@@ -124,9 +88,9 @@ const CheckoutForm = () => {
 				payment_method: {
 					card: card,
 					billing_details: {
-						email: userData?.email || "anonymous",
-						name: userData?.userName || "anonymous",
-						phone: userData?.phone || "anonymous",
+						email: user?.email || "anonymous",
+						name: user?.userName || "anonymous",
+						phone: user?.phone || "anonymous",
 					},
 				},
 			});

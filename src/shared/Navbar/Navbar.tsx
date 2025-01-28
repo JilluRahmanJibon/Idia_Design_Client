@@ -1,23 +1,18 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { FaShoppingCart, FaUserAlt } from "react-icons/fa";
 import logo from "../../assets/Logo/idia.png";
+import { useUser } from "../../context/UserContext";
 
 const Navbar = () => {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
-	const [isLoggedIn, setIsLoggedIn] = useState(false);
+	const { user, setUser } = useUser();
 	const navigate = useNavigate();
-	const token = localStorage.getItem("AuthToken");
 
-	useEffect(() => {
-		setIsLoggedIn(!!token);
-	}, [token]);
-
-	// Handle Logout
 	const handleLogout = () => {
-		localStorage.removeItem("AuthToken"); // Clear the token
-		setIsLoggedIn(false); // Update auth state
-		navigate("/login"); // Redirect to the login page
+		setUser(null);
+		localStorage.removeItem("AuthToken");
+		navigate("/login");
 	};
 
 	// Get cart count from local storage
@@ -54,6 +49,33 @@ const Navbar = () => {
 					Contact
 				</NavLink>
 			</li>
+			{!user?.email && (
+				<>
+					<li>
+						<NavLink
+							to="/about"
+							className={({ isActive }) =>
+								isActive
+									? "text-primary font-semibold text-lg"
+									: "text-gray-600 hover:text-primary font-medium text-lg transition-colors"
+							}>
+							About
+						</NavLink>
+					</li>
+					<li>
+						<NavLink
+							to="/login"
+							className={({ isActive }) =>
+								isActive
+									? "text-primary font-semibold text-lg flex items-center gap-1"
+									: "text-gray-600 hover:text-primary flex items-center gap-1 font-medium text-lg transition-colors"
+							}>
+							<FaUserAlt className="text-lg" />
+							<span>Login</span>
+						</NavLink>
+					</li>
+				</>
+			)}
 		</>
 	);
 
@@ -74,7 +96,7 @@ const Navbar = () => {
 						</ul>
 
 						{/* Login/Profile/Logout */}
-						{isLoggedIn ? (
+						{user && user?.email && (
 							<div className="flex items-center space-x-4">
 								{/* Cart Icon */}
 								<NavLink
@@ -97,26 +119,6 @@ const Navbar = () => {
 									Logout
 								</button>
 							</div>
-						) : (
-							<>
-								<li>
-									<NavLink
-										to="/about"
-										className={({ isActive }) =>
-											isActive
-												? "text-primary font-semibold text-lg"
-												: "text-gray-600 hover:text-primary font-medium text-lg transition-colors"
-										}>
-										About
-									</NavLink>
-								</li>
-								<NavLink
-									to="/login"
-									className="flex items-center space-x-2 text-gray-600 hover:text-primary transition-colors">
-									<FaUserAlt className="text-lg" />
-									<span>Login</span>
-								</NavLink>
-							</>
 						)}
 
 						{/* Mobile Menu Button (Hamburger) */}
@@ -147,7 +149,7 @@ const Navbar = () => {
 					<div className="lg:hidden">
 						<div className="bg-white shadow-md rounded-md p-4 space-y-4">
 							<ul className="space-y-4">{menuItems}</ul>
-							{isLoggedIn ? (
+							{user && user?.email ? (
 								<div className="flex flex-col items-start space-y-4">
 									<NavLink
 										to="/dashboard"
@@ -161,11 +163,7 @@ const Navbar = () => {
 									</button>
 								</div>
 							) : (
-								<NavLink
-									to="/login"
-									className="text-gray-600 hover:text-primary transition-colors">
-									Login
-								</NavLink>
+								""
 							)}
 						</div>
 					</div>

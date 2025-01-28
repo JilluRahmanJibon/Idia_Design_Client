@@ -1,6 +1,6 @@
 const HomeBanner = () => {
 	return (
-		<section className="relative bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-20">
+		<section className="relative bg-gradient-to-r from-primary to-secondary text-white lg:py-32 py-10">
 			{/* Background image or animation */}
 			<div className="absolute inset-0 z-0 overflow-hidden">
 				<video
@@ -8,7 +8,7 @@ const HomeBanner = () => {
 					autoPlay
 					loop
 					muted
-					src="path_to_your_motion_graphics_video.mp4" // Replace with a sample motion graphic video
+					src="/src/assets/video/motion-video.mp4" 
 				/>
 			</div>
 

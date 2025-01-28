@@ -4,10 +4,13 @@ import "./index.css";
 import { RouterProvider } from "react-router-dom";
 import router from "./routes/Route.tsx";
 import { Toaster } from "sonner";
+import { UserProvider } from "./context/UserContext.tsx";
 
 createRoot(document.getElementById("root")!).render(
 	<StrictMode>
-		<RouterProvider router={router} />
-		<Toaster/>
+		<UserProvider>
+			<RouterProvider router={router} />
+			<Toaster />
+		</UserProvider>
 	</StrictMode>
 );

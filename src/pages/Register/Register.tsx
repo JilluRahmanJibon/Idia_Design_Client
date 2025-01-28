@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import axios from "axios";
@@ -77,7 +77,7 @@ const Register = () => {
 	};
 
 	return (
-		<div className="min-h-screen flex flex-col bg-gradient-to-r from-purple-500 to-indigo-800">
+		<div className="min-h-screen flex flex-col bg-gradient-to-r from-secondary to-primary">
 			<div className="flex-1 flex items-center justify-center py-10">
 				<div className="bg-white p-8 rounded-lg shadow-lg max-w-sm w-full">
 					<h2 className="text-3xl font-bold text-center text-gray-800 mb-8">
@@ -217,11 +217,11 @@ const Register = () => {
 					<div className="mt-6 text-center">
 						<p className="text-sm text-gray-600">
 							Already have an account?{" "}
-							<a
-								href="/login"
+							<Link
+								to="/login"
 								className="text-secondary hover:text-primary font-medium">
 								Login here
-							</a>
+							</Link>
 						</p>
 					</div>
 				</div>

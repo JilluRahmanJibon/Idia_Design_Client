@@ -1,10 +1,13 @@
 import { ReactNode } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
+import { useUser } from "../context/UserContext";
 
 const ProtectedRoute = ({ children }: { children: ReactNode }) => {
+	const { user } = useUser();
+	const location = useLocation();
 	const token = localStorage.getItem("AuthToken");
-	if (!token) {
-		return <Navigate to={`/login`} replace={true} />;
+	if (!token && !user?.email) {
+		return <Navigate to={`/login`} state={{ from: location }} replace />;
 	}
 
 	return children;

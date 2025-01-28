@@ -1,8 +1,9 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import axios from "axios";
-import { useNavigate } from "react-router-dom"; // For navigation after login
+import { Link, useLocation, useNavigate } from "react-router-dom"; // For navigation after login
 import { toast } from "sonner"; // For toast notifications
 import { BaseApi } from "../../utils/BaseApi";
+import { useUser } from "../../context/UserContext";
 
 interface ILoginForm {
 	email: string;
@@ -16,6 +17,10 @@ const Login = () => {
 		formState: { errors },
 	} = useForm<ILoginForm>();
 	const navigate = useNavigate();
+		const location = useLocation();
+		const from = location.state?.from?.pathname || "/";
+
+	const { setUser } = useUser();
 
 	const onSubmit: SubmitHandler<ILoginForm> = async data => {
 		try {
@@ -26,12 +31,12 @@ const Login = () => {
 			if (response.data.data.accessToken) {
 				// Save token to localStorage
 				localStorage.setItem("AuthToken", response.data.data.accessToken);
-
+				setUser(response.data.data.accessToken);
 				// Show success message
 				toast.success(`${response.data.message}`);
 
 				// Redirect to homepage/dashboard
-				navigate("/");
+			navigate(from, { replace: true });
 			} else {
 				throw new Error("Access token is missing in the response!");
 			}
@@ -48,7 +53,7 @@ const Login = () => {
 	};
 
 	return (
-		<div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-500 to-blue-900">
+		<div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-primary to-secondary">
 			<div className="bg-white p-8 rounded-lg shadow-lg max-w-sm w-full">
 				<h2 className="text-3xl font-bold text-center text-gray-800 mb-8">
 					Login
@@ -115,11 +120,11 @@ const Login = () => {
 				<div className="mt-6 text-center">
 					<p className="text-sm text-gray-600">
 						Don't have an account?{" "}
-						<a
-							href="/register"
+						<Link
+							to="/register"
 							className="text-secondary hover:text-primary font-medium">
 							Register here
-						</a>
+						</Link>
 					</p>
 				</div>
 			</div>
