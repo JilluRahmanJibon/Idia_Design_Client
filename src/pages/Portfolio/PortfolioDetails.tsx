@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { BaseApi } from "../../utils/BaseApi";
 import ReactModalImage from "react-modal-image"; // Import the modal image library
 import Loader from "../../components/Loader/Loader";
-import { toast } from "sonner";
-import { useUser } from "../../context/UserContext";
-import axios from "axios";
+// import { toast } from "sonner";
+// import { useUser } from "../../context/UserContext";
+// import axios from "axios";
 
 // Define the type for the image object
 interface Image {
@@ -27,9 +27,9 @@ interface PortfolioData {
 
 const PortfolioDetails = () => {
 	const [data, setData] = useState<PortfolioData | null>(null);
-	const { user } = useUser();
+	// const { user } = useUser();
 	const params = useParams();
-	const navigate = useNavigate();
+	// const navigate = useNavigate();
 	const token = localStorage.getItem("AuthToken");
 
 	useEffect(() => {
@@ -46,58 +46,57 @@ const PortfolioDetails = () => {
 	}
 
 	const {
-		_id,
 		title,
 		price,
 		description,
 		createdAt,
 		service,
-		picture,
 		video,
 		images,
 	} = data;
 
-	const addToCart = async () => {
-		if (!user) {
-			toast.error("Please log in to add items to the cart.");
-			navigate("/login");
-			return;
-		}
+	// const addToCart = async () => {
+	// 	if (!user) {
+	// 		toast.error("Please log in to add items to the cart.");
+	// 		navigate("/login");
+	// 		return;
+	// 	}
 
-		const cartData = {
-			userId: user?._id,
-			userEmail: user?.email,
-			productId: _id,
-			productName: title,
-			price: price,
-			picture: picture,
-		};
-		try {
-			const res = await axios.post(`${BaseApi}/cart/add`, cartData, {
-				headers: {
-					Authorization: `${token}`,
-					"Content-Type": "application/json",
-				},
-			});
+	// 	const cartData = {
+	// 		userId: user?._id,
+	// 		userEmail: user?.email,
+	// 		productId: _id,
+	// 		productName: title,
+	// 		price: price,
+	// 		picture: picture,
+	// 	};
+	// 	try {
+	// 		const res = await axios.post(`${BaseApi}/cart/add`, cartData, {
+	// 			headers: {
+	// 				Authorization: `${token}`,
+	// 				"Content-Type": "application/json",
+	// 			},
+	// 		});
 
-			toast.success(res.data.message);
-		} catch (err: any) {
-			toast.error(err.response.data.message);
-		}
-	};
+	// 		toast.success(res.data.message);
+	// 	} catch (err: any) {
+	// 		toast.error(err.response.data.message);
+	// 	}
+	// };
 
-	const buyNow = () => {
-		if (!token) {
-			toast.error("Please log in to proceed with the purchase.");
-			navigate("/login");
-		} else if (price) {
-			const priceInCents = Number(price) * 100; // Convert price to cents
-			alert(`Proceeding to purchase: ${title} for $${priceInCents / 100}`);
-			// Add further logic for payment processing, e.g., call to backend for payment integration
-		} else {
-			toast.error("Invalid price data.");
-		}
-	};
+	// const buyNow = () => {
+	// 	if (!token) {
+	// 		toast.error("Please log in to proceed with the purchase.");
+	// 		navigate("/login");
+	// 	} else if (price) {
+	// 		// const priceInCents = Number(price) * 100; // Convert price to cents
+	// 		// alert(`Proceeding to purchase: ${title} for $${priceInCents / 100}`);
+	// 		// Add further logic for payment processing, e.g., call to backend for payment integration
+	// 		navigate('/cart')
+	// 	} else {
+	// 		toast.error("Invalid price data.");
+	// 	}
+	// };
 
 	return (
 		<main className="overflow-hidden pb-6">
@@ -183,16 +182,18 @@ const PortfolioDetails = () => {
 			{/* Add to Cart and Buy Now Buttons */}
 			{price ? (
 				<section className="m-16 p-12 flex justify-center space-x-4">
-					<button
+					<Link
+						to={``}
+						className="px-8 py-3 bg-secondary text-white text-xl rounded-full shadow-md transform transition-all duration-300 hover:bg-primary hover:scale-105"> Buy Now</Link>
+					{/* <button
 						onClick={addToCart}
 						className="px-8 py-3 bg-secondary text-white text-xl rounded-full shadow-md transform transition-all duration-300 hover:bg-primary hover:scale-105">
 						Add to Cart
-					</button>
-					<button
-						onClick={buyNow}
+					</button> */}
+					{/* <button
 						className="px-8 py-3 bg-primary text-white text-xl rounded-full shadow-md transform transition-all duration-300 hover:bg-secondary hover:scale-105">
-						Buy Now - ${price}
-					</button>
+						View Cart
+					</button> */}
 				</section>
 			) : (
 				<section className="m-16 p-12 flex justify-center">

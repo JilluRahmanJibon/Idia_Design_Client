@@ -49,7 +49,18 @@ const Navbar = () => {
 					Contact
 				</NavLink>
 			</li>
-			{!user?.email && (
+			<li>
+				<NavLink
+					to="/about"
+					className={({ isActive }) =>
+						isActive
+							? "text-primary font-semibold text-lg"
+							: "text-gray-600 hover:text-primary font-medium text-lg transition-colors"
+					}>
+					About
+				</NavLink>
+			</li>
+			{/* {!user?.email && (
 				<>
 					<li>
 						<NavLink
@@ -75,12 +86,12 @@ const Navbar = () => {
 						</NavLink>
 					</li>
 				</>
-			)}
+			)} */}
 		</>
 	);
 
 	return (
-		<nav className="bg-blue-50 shadow-sm sticky top-0 z-50">
+		<nav className="bg-green-50 shadow-sm sticky top-0 z-50">
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 				<div className="flex justify-between items-center py-4">
 					{/* Logo Section - Left Column */}

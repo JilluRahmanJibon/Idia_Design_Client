@@ -1,9 +1,11 @@
+import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import axios from "axios";
-import { Link, useLocation, useNavigate } from "react-router-dom"; // For navigation after login
-import { toast } from "sonner"; // For toast notifications
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { BaseApi } from "../../utils/BaseApi";
 import { useUser } from "../../context/UserContext";
+import { AiOutlineLoading3Quarters } from "react-icons/ai"; // Importing loading icon
 
 interface ILoginForm {
 	email: string;
@@ -17,38 +19,33 @@ const Login = () => {
 		formState: { errors },
 	} = useForm<ILoginForm>();
 	const navigate = useNavigate();
-		const location = useLocation();
-		const from = location.state?.from?.pathname || "/";
-
+	const location = useLocation();
+	const from = location.state?.from?.pathname || "/";
 	const { setUser } = useUser();
+	const [isLoading, setIsLoading] = useState(false); // Loading state
 
 	const onSubmit: SubmitHandler<ILoginForm> = async data => {
+		setIsLoading(true);
 		try {
-			// Make the API call
 			const response = await axios.post(`${BaseApi}/auth/login`, data);
 
-			// Check if token exists
 			if (response.data.data.accessToken) {
-				// Save token to localStorage
 				localStorage.setItem("AuthToken", response.data.data.accessToken);
 				setUser(response.data.data.accessToken);
-				// Show success message
 				toast.success(`${response.data.message}`);
-
-				// Redirect to homepage/dashboard
-			navigate(from, { replace: true });
+				navigate(from, { replace: true });
 			} else {
 				throw new Error("Access token is missing in the response!");
 			}
 		} catch (error: any) {
 			console.error("🚀 ~ Login Error:", error);
-
-			// Handle API errors
 			if (error.response) {
 				toast.error(error.response.data.message || "Login failed!");
 			} else {
 				toast.error("An error occurred. Please try again.");
 			}
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
@@ -59,7 +56,6 @@ const Login = () => {
 					Login
 				</h2>
 
-				{/* Login Form */}
 				<form onSubmit={handleSubmit(onSubmit)}>
 					<div className="mb-4">
 						<label
@@ -112,8 +108,14 @@ const Login = () => {
 					{/* Submit Button */}
 					<button
 						type="submit"
-						className="w-full py-3 bg-primary text-white text-lg font-semibold rounded-md shadow-md transform transition-all duration-300 hover:bg-secondary hover:scale-105">
-						Login
+						className="w-full py-3 bg-primary text-white text-lg font-semibold rounded-md shadow-md transform transition-all duration-300 hover:bg-secondary hover:scale-105 flex items-center justify-center"
+						disabled={isLoading}>
+						{isLoading ? (
+							<AiOutlineLoading3Quarters className="animate-spin text-2xl mr-2" />
+						) : (
+							"Login"
+						)}
+						{isLoading ? "Logging in..." : ""}
 					</button>
 				</form>
 

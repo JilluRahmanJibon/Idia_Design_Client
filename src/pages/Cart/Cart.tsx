@@ -20,6 +20,7 @@ const Cart = () => {
 	const [cartItems, setCartItems] = useState<ICartItem[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
+	console.log("🚀 ~ Cart ~ error:", error);
 	const navigate = useNavigate();
 
 	useEffect(() => {
@@ -34,7 +35,7 @@ const Cart = () => {
 				// Handle the response data
 				setCartItems(res.data.data.items);
 				setLoading(false);
-			} catch (err:any) {
+			} catch (err: any) {
 				// Handle error
 				setError(err.message || "Failed to load cart data");
 				setLoading(false);
@@ -48,22 +49,21 @@ const Cart = () => {
 	const handleRemoveItem = async (id: string) => {
 		try {
 			// Optimistic UI Update: Remove item from state first
-			
+
 			// Send request to backend to remove the item from the cart
-			const res=	await axios.delete(`${BaseApi}/cart/remove/${id}`, {
+			const res = await axios.delete(`${BaseApi}/cart/remove/${id}`, {
 				headers: {
 					Authorization: `${token}`, // Include token if necessary
 				},
 			});
-			console.log(res)
+			console.log(res);
 			setCartItems(cartItems.filter(item => item._id !== id));
-			toast.success(res.data.message)
+			toast.success(res.data.message);
 		} catch (error) {
 			console.error("Failed to remove item:", error);
 			// Optionally, handle the error by showing a message to the user
 		}
 	};
-
 
 	// Calculate total amount without quantity
 	const totalAmount = cartItems?.reduce(
@@ -122,7 +122,7 @@ const Cart = () => {
 										<tr
 											key={item._id}
 											className={`border-b transition-colors duration-200 ${
-												index % 2 === 0 ? "bg-gray-200" : "bg-gray-100"
+												index % 2 === 0 ? "bg-green-100" : "bg-blue-100"
 											}`}>
 											<td className="px-6 py-4 flex items-center space-x-4">
 												<img

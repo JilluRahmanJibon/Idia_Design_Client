@@ -113,7 +113,7 @@ const CheckoutForm = () => {
 				Payment will deducted:{" "}
 				<span className="text-secondary font-bold"> ${totalAmount}</span>
 			</p>
-			<CardElement
+			<CardElement className="py-8"
 				options={{
 					style: {
 						base: {
