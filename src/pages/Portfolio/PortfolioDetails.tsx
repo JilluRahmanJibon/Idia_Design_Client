@@ -45,15 +45,7 @@ const PortfolioDetails = () => {
 		return <Loader />;
 	}
 
-	const {
-		title,
-		price,
-		description,
-		createdAt,
-		service,
-		video,
-		images,
-	} = data;
+	const { title, price, description, createdAt, service, video, images } = data;
 
 	// const addToCart = async () => {
 	// 	if (!user) {
@@ -113,7 +105,7 @@ const PortfolioDetails = () => {
 					{images.map((img, i) => (
 						<div
 							key={i}
-							className="w-full h-[400px] bg-gray-100 overflow-hidden rounded-lg shadow-lg">
+							className="w-full md:h-[400px] bg-gray-100 overflow-hidden rounded-lg shadow-lg">
 							<ReactModalImage
 								className="object-cover w-full h-full transition-transform transform hover:scale-105 cursor-pointer"
 								small={img.img}
@@ -127,9 +119,9 @@ const PortfolioDetails = () => {
 
 			{/* Video Section */}
 			{video && (
-				<section className="mt-10 mx-auto">
+				<section className="mt-10 mx-auto px-2">
 					<iframe
-						className="w-full h-[500px] rounded-lg shadow-lg"
+						className="w-full md:h-[500px] h-[300px] rounded-lg shadow-lg"
 						src={video}
 						frameBorder="0"
 						allow="autoplay; fullscreen; picture-in-picture"
@@ -184,7 +176,10 @@ const PortfolioDetails = () => {
 				<section className="m-16 p-12 flex justify-center space-x-4">
 					<Link
 						to={``}
-						className="px-8 py-3 bg-secondary text-white text-xl rounded-full shadow-md transform transition-all duration-300 hover:bg-primary hover:scale-105"> Buy Now</Link>
+						className="px-8 py-3 bg-secondary text-white text-xl rounded-full shadow-md transform transition-all duration-300 hover:bg-primary hover:scale-105">
+						{" "}
+						Buy Now
+					</Link>
 					{/* <button
 						onClick={addToCart}
 						className="px-8 py-3 bg-secondary text-white text-xl rounded-full shadow-md transform transition-all duration-300 hover:bg-primary hover:scale-105">
